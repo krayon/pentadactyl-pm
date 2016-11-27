@@ -502,7 +502,7 @@ var CommandHive = Class("CommandHive", Contexts.Hive, {
         let { cache } = this.modules;
         this.cached = true;
 
-        let cached = cache.get(this.cacheKey, function () {
+        let localcached = cache.get(this.cacheKey, function () {
             self.cached = false;
             this.modules.moduleManager.initDependencies("commands");
 
@@ -519,10 +519,10 @@ var CommandHive = Class("CommandHive", Contexts.Hive, {
             return { map: map, specs: specs };
         });
 
-        let cached = cache.get(this.cacheKey);
+        localcached = cache.get(this.cacheKey);
         if (this.cached) {
-            this._specs = cached.specs;
-            for (let [k, v] in Iterator(cached.map))
+            this._specs = localcached.specs;
+            for (let [k, v] in Iterator(localcached.map))
                 this._map[k] = v;
         }
     },
@@ -762,7 +762,7 @@ var Commands = Module("commands", {
             // TODO: allow matching of aliases?
             function cmds(hive) hive._list.filter(cmd => cmd.name.indexOf(filter || "") == 0)
 
-            let hives = (hives || this.userHives).map(h => [h, cmds(h)])
+            let localhives = (hives || this.userHives).map(h => [h, cmds(h)])
                                                  .filter(([h, c]) => c.length);
 
             let list = ["table", {},
@@ -775,7 +775,7 @@ var Commands = Module("commands", {
                     ["td", { style: "padding-right: 1ex;" }, _("title.Complete")],
                     ["td", { style: "padding-right: 1ex;" }, _("title.Definition")]],
                 ["col", { style: "min-width: 6em; padding-right: 1em;" }],
-                hives.map(([hive, cmds]) => let (i = 0) [
+                localhives.map(([hive, cmds]) => let (i = 0) [
                     ["tr", { style: "height: .5ex;" }],
                     cmds.map(cmd =>
                         ["tr", {},

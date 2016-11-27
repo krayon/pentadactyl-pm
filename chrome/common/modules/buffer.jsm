@@ -99,23 +99,23 @@ var Buffer = Module("Buffer", {
     },
 
     climbUrlPath: function climbUrlPath(count) {
-        let { dactyl } = this.modules;
+        let { localdactyl } = this.modules;
 
         let url = this.uri.clone();
-        dactyl.assert(url instanceof Ci.nsIURL);
+        localdactyl.assert(url instanceof Ci.nsIURL);
 
         while (count-- && url.path != "/")
             url.path = url.path.replace(/[^\/]*\/*$/, "");
 
-        dactyl.assert(!url.equals(this.uri));
-        dactyl.open(url.spec);
+        localdactyl.assert(!url.equals(this.uri));
+        localdactyl.open(url.spec);
     },
 
     incrementURL: function incrementURL(count) {
-        let { dactyl } = this.modules;
+        localdactyl = this.modules;
 
         let matches = this.uri.spec.match(/(.*?)(\d+)(\D*)$/);
-        dactyl.assert(matches);
+        localdactyl.assert(matches);
         let oldNum = matches[2];
 
         // disallow negative numbers as trailing numbers are often proceeded by hyphens
@@ -125,7 +125,7 @@ var Buffer = Module("Buffer", {
                 newNum = "0" + newNum;
 
         matches[2] = newNum;
-        dactyl.open(matches.slice(1).join(""));
+        localdactyl.open(matches.slice(1).join(""));
     },
 
     /**
@@ -465,7 +465,7 @@ var Buffer = Module("Buffer", {
      *     {@link dactyl.open}.
      */
     followLink: function followLink(elem, where) {
-        let { dactyl } = this.modules;
+        let { localdactyl } = this.modules;
 
         let doc = elem.ownerDocument;
         let win = doc.defaultView;
@@ -476,7 +476,7 @@ var Buffer = Module("Buffer", {
             return this.focusElement(elem);
 
         if (isinstance(elem, Ci.nsIDOMHTMLLinkElement))
-            return dactyl.open(elem.href, where);
+            return localdactyl.open(elem.href, where);
 
         if (elem instanceof Ci.nsIDOMHTMLAreaElement) { // for imagemap
             let coords = elem.getAttribute("coords").split(",");
@@ -488,21 +488,21 @@ var Buffer = Module("Buffer", {
             return;
         }
 
-        let { dactyl } = this.modules;
+        localdactyl = this.modules;
 
         let ctrlKey = false, shiftKey = false;
         let button = 0;
-        switch (dactyl.forceTarget || where) {
-        case dactyl.NEW_TAB:
-        case dactyl.NEW_BACKGROUND_TAB:
+        switch (localdactyl.forceTarget || where) {
+        case localdactyl.NEW_TAB:
+        case localdactyl.NEW_BACKGROUND_TAB:
             button = 1;
-            shiftKey = dactyl.forceBackground != null ? dactyl.forceBackground
-                                                      : where != dactyl.NEW_BACKGROUND_TAB;
+            shiftKey = localdactyl.forceBackground != null ? localdactyl.forceBackground
+                                                      : where != localdactyl.NEW_BACKGROUND_TAB;
             break;
-        case dactyl.NEW_WINDOW:
+        case localdactyl.NEW_WINDOW:
             shiftKey = true;
             break;
-        case dactyl.CURRENT_TAB:
+        case localdactyl.CURRENT_TAB:
             break;
         }
 
@@ -861,9 +861,9 @@ var Buffer = Module("Buffer", {
         if (win && (win.scrollMaxX > 0 || win.scrollMaxY > 0))
             return win;
 
-        let win = this.focusedFrame;
-        if (win && (win.scrollMaxX > 0 || win.scrollMaxY > 0))
-            return win;
+        win = this.focusedFrame;
+        if (win2 && (win2.scrollMaxX > 0 || win2.scrollMaxY > 0))
+            return win2;
 
         win = this.win;
         if (win.scrollMaxX > 0 || win.scrollMaxY > 0)
