@@ -113,7 +113,7 @@ var Browser = Module("browser", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), 
                 // This fires when the load event is initiated
                 // only thrown for the current tab, not when another tab changes
                 if (flags & L.STATE_START) {
-                    while (document.commandDispatcher.focusedWindow == webProgress.DOMWindow
+                    while (window.document.commandDispatcher.focusedWindow == webProgress.DOMWindow
                            && modes.have(modes.INPUT))
                         modes.pop();
 

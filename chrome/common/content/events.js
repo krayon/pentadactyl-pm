@@ -104,7 +104,7 @@ var Events = Module("events", {
 
         overlay.overlayWindow(window, {
             append: [
-                ["window", { id: document.documentElement.id, xmlns: "xul" },
+                ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                     // http://developer.mozilla.org/en/docs/XUL_Tutorial:Updating_Commands
                     ["commandset", { id: "dactyl-onfocus", commandupdater: "true", events: "focus",
                                      commandupdate: this.closure.onFocusChange }],
@@ -385,7 +385,7 @@ var Events = Module("events", {
                     evt.dactylSavedEvents = savedEvents;
                     DOM.Event.feedingEvent = evt;
 
-                    let doc = document.commandDispatcher.focusedWindow.document;
+                    let doc = window.document.commandDispatcher.focusedWindow.document;
 
                     let target = dactyl.focusedElement
                               || ["complete", "interactive"].indexOf(doc.readyState) >= 0 && doc.documentElement
@@ -450,7 +450,7 @@ var Events = Module("events", {
         if (!passUnknown)
             return false;
 
-        var elements = document.getElementsByTagNameNS(XUL, "key");
+        var elements = window.document.getElementsByTagNameNS(XUL, "key");
         var filters = [];
 
         if (event.keyCode)
@@ -576,13 +576,13 @@ var Events = Module("events", {
                                 DOM(elem).editor, editor);
 
             if (elem instanceof Window && services.focus.activeWindow == null
-                && document.commandDispatcher.focusedWindow !== window) {
+                && window.document.commandDispatcher.focusedWindow !== window) {
                 // Deals with circumstances where, after the main window
                 // blurs while a collapsed frame has focus, re-activating
                 // the main window does not restore focus and we lose key
                 // input.
                 services.focus.clearFocus(window);
-                document.commandDispatcher.focusedWindow = Editor.getEditor(content) ? window : content;
+                window.document.commandDispatcher.focusedWindow = Editor.getEditor(content) ? window : content;
             }
 
             let hold = modes.topOfStack.params.holdFocus;
@@ -879,7 +879,7 @@ var Events = Module("events", {
                 return;
             }
 
-            let urlbar = document.getElementById("urlbar");
+            let urlbar = window.document.getElementById("urlbar");
             if (elem == null && urlbar && urlbar.inputField == this._lastFocus.get())
                 util.threadYield(true); // Why? --Kris
 
@@ -904,7 +904,7 @@ var Events = Module("events", {
         if (editor.inEditMap || modes.main == modes.OPERATOR)
             return;
 
-        let controller = document.commandDispatcher.getControllerForCommand("cmd_copy");
+        let controller = window.document.commandDispatcher.getControllerForCommand("cmd_copy");
         let couldCopy = controller && controller.isCommandEnabled("cmd_copy");
 
         if (couldCopy) {

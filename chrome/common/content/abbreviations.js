@@ -249,7 +249,7 @@ var Abbreviations = Module("abbreviations", {
     match: function (mode, text) {
         let match = this._match.exec(text);
         if (match)
-            return this.hives.map(h => h.get(mode, match[2] || match[4] || match[6]))
+            return this.localhives.map(h => h.get(mode, match[2] || match[4] || match[6]))
                        .nth(util.identity, 0);
         return null;
     },

@@ -347,7 +347,7 @@ var StatusLine = Module("statusline", {
      */
     updateBufferPosition: function updateBufferPosition(percent) {
         if (percent == null) {
-            let win = document.commandDispatcher.focusedWindow;
+            let win = window.document.commandDispatcher.focusedWindow;
             if (!win)
                 return;
             win.scrollY; // intentional - see Kris

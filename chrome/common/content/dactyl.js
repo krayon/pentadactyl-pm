@@ -35,7 +35,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         this.cleanups = [];
         this.cleanups.push(overlay.overlayObject(window, {
             focusAndSelectUrlBar: function focusAndSelectUrlBar() {
-                switch (options.get("strictfocus").getKey(document.documentURIObject || util.newURI(document.documentURI), "moderate")) {
+                switch (options.get("strictfocus").getKey(window.document.documentURIObject || util.newURI(window.document.documentURI), "moderate")) {
                 case "laissez-faire":
                     if (!Events.isHidden(window.gURLBar, true))
                         return focusAndSelectUrlBar.superapply(this, arguments);
@@ -58,7 +58,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             #TabsToolbar tab { display: none; }\n\
         ');
         styles.unregisterSheet("resource://dactyl-skin/dactyl.css");
-        DOM('#TabsToolbar tab', document).style.display;
+        DOM('#TabsToolbar tab', window.document).style.display;
     },
 
     destroy: function () {
@@ -569,7 +569,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         if (window != services.focus.activeWindow)
             return;
 
-        let win = document.commandDispatcher.focusedWindow;
+        let win = window.document.commandDispatcher.focusedWindow;
         let elem = config.mainWidget || content;
 
         // TODO: make more generic
@@ -1325,7 +1325,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 }, config.guioptions),
                 setter: function (opts) {
                     for (let [opt, [, ids]] in Iterator(this.opts)) {
-                        ids.map(id => document.getElementById(id))
+                        ids.map(id => window.document.getElementById(id))
                            .forEach(function (elem) {
                             if (elem)
                                 dactyl.setNodeVisible(elem, opts.indexOf(opt) >= 0);
@@ -1412,7 +1412,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             "string", config.host,
             {
                 setter: function (value) {
-                    let win = document.documentElement;
+                    let win = window.document.documentElement;
                     function updateTitle(old, current) {
                         if (config.browser.updateTitlebar)
                             config.browser.updateTitlebar();
@@ -1664,7 +1664,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 "@toolbarname=" + util.escapeString(name.trim(), "'") + "]",
             document).snapshotItem(0);
 
-        var toolbox = document.getElementById("navigator-toolbox");
+        var toolbox = window.document.getElementById("navigator-toolbox");
         if (toolbox) {
             let toolbarCommand = function (names, desc, action, filter) {
                 commands.add(names, desc,
