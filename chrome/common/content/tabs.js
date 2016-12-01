@@ -19,7 +19,7 @@ var Tabs = Module("tabs", {
         this._lastBufferSwitchArgs = "";
         this._lastBufferSwitchSpecial = true;
 
-        this.xulTabs = document.getElementById("tabbrowser-tabs");
+        this.xulTabs = window.document.getElementById("tabbrowser-tabs");
 
         // hide tabs initially to prevent flickering when 'stal' would hide them
         // on startup
@@ -230,7 +230,7 @@ var Tabs = Module("tabs", {
      * @returns {Window}
      */
     getGroups: function getGroups(func) {
-        let iframe = document.getElementById("tab-view");
+        let iframe = window.document.getElementById("tab-view");
         this._groups = iframe ? iframe.contentWindow : null;
 
         if ("_groups" in this && !func)

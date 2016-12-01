@@ -309,7 +309,7 @@ var CommandWidgets = Class("CommandWidgets", {
                 MozImageRegion: style.MozImageRegion
             });
         });
-        return document.getElementById("dactyl-contextmenu");
+        return window.document.getElementById("dactyl-contextmenu");
     }),
 
     multilineOutput: Class.Memoize(function () this._whenReady("dactyl-multiline-output",
@@ -628,7 +628,7 @@ var CommandLine = Module("commandline", {
     get completionList() {
         let node = this.widgets.active.commandline;
         if (this.commandSession && this.commandSession.completionList)
-            node = document.getElementById(this.commandSession.completionList);
+            node = window.document.getElementById(this.commandSession.completionList);
 
         if (!node.completionList) {
             let elem = window.document.getElementById("dactyl-completions-" + node.id);
@@ -2172,7 +2172,7 @@ var ItemList = Class("ItemList", {
         let { completions, root } = this.nodes;
 
         if (!this.visible)
-            root.style.minWidth = document.getElementById("dactyl-commandline").scrollWidth + "px";
+            root.style.minWidth = window.document.getElementById("dactyl-commandline").scrollWidth + "px";
 
         let { minHeight } = this;
         if (mow.visible && this.isAboveMow) // Kludge.

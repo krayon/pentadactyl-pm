@@ -746,7 +746,7 @@ var Hints = Module("hints", {
                 modes.getStack(0).params.onResize();
         });
 
-        let appContent = document.getElementById("appcontent");
+        let appContent = window.document.getElementById("appcontent");
         if (appContent)
             events.listen(appContent, "scroll", this.resizeTimer.closure.tell, false);
 

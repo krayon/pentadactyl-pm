@@ -163,7 +163,7 @@ var Browser = Module("browser", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), 
             // Workaround for bugs 591425 and 606877, dactyl bug #81
             let collapse = uri && uri.scheme === "dactyl" && webProgress.isLoadingDocument;
             if (collapse)
-                dactyl.focus(document.documentElement);
+                dactyl.focus(window.document.documentElement);
             config.browser.mCurrentBrowser.collapsed = collapse;
 
             util.timeout(function () {

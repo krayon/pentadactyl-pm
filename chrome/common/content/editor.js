@@ -21,7 +21,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
                 if (elem)
                     return elem.inputField || elem;
 
-                let win = document.commandDispatcher.focusedWindow;
+                let win = window.document.commandDispatcher.focusedWindow;
                 return DOM(win).isEditable && win || null;
             });
     },
@@ -400,7 +400,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
         }
         else {
             var editor_ = window.GetCurrentEditor ? GetCurrentEditor()
-                                                  : Editor.getEditor(document.commandDispatcher.focusedWindow);
+                                                  : Editor.getEditor(window.document.commandDispatcher.focusedWindow);
             dactyl.assert(editor_);
             text = Array.map(editor_.rootElement.childNodes,
                              e => DOM.stringify(e, true))
@@ -686,7 +686,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
         }
 
         if (!elem)
-            elem = dactyl.focusedElement || document.commandDispatcher.focusedWindow;
+            elem = dactyl.focusedElement || window.document.commandDispatcher.focusedWindow;
         dactyl.assert(elem);
 
         return DOM(elem).editor;
@@ -820,7 +820,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             };
 
             function caretExecute(arg) {
-                let win = document.commandDispatcher.focusedWindow;
+                let win = window.document.commandDispatcher.focusedWindow;
                 let controller = util.selectionController(win);
                 let sel = controller.getSelection(controller.SELECTION_NORMAL);
 
@@ -1123,7 +1123,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
                                // focus and use their own WYSIWYG editor
                                // implementations for the visible area,
                                // which we can't handle.
-                               let (f = document.commandDispatcher.focusedWindow.frameElement)
+                               let (f = window.document.commandDispatcher.focusedWindow.frameElement)
                                     f && Hints.isVisible(f, true));
 
                  modes.push(modes.TEXT_EDIT);

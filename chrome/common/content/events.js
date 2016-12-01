@@ -433,7 +433,7 @@ var Events = Module("events", {
         return DOM.Event.stringify.apply(DOM.Event, arguments);
     },
 
-    get defaultTarget() dactyl.focusedElement || content.document.body || document.documentElement,
+    get defaultTarget() dactyl.focusedElement || content.document.body || window.document.documentElement,
 
     /**
      * Returns true if there's a known native key handler for the given
@@ -561,7 +561,7 @@ var Events = Module("events", {
             let rect = dactyl.focusedElement.getBoundingClientRect();
             if (!rect.width || !rect.height) {
                 services.focus.clearFocus(window);
-                document.commandDispatcher.focusedWindow = content;
+                window.document.commandDispatcher.focusedWindow = content;
                 // onFocusChange needs to die.
                 this.onFocusChange();
             }

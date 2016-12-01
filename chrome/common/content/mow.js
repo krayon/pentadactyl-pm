@@ -291,7 +291,7 @@ var MOW = Module("mow", {
                 if (focused && Events.isInputElement(focused))
                     focused.blur();
 
-                document.commandDispatcher.focusedWindow = content;
+                window.document.commandDispatcher.focusedWindow = content;
             }
         }
     })

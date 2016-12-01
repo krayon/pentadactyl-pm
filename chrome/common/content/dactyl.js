@@ -76,7 +76,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         for (let option in guioptions) {
             guioptions[option].forEach(function (elem) {
                 try {
-                    document.getElementById(elem).collapsed = true;
+                    window.document.getElementById(elem).collapsed = true;
                 }
                 catch (e) {}
             });
@@ -150,7 +150,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         }
 
         let items = [];
-        addChildren(document.getElementById(config.guioptions["m"][1]), "");
+        addChildren(window.document.getElementById(config.guioptions["m"][1]), "");
         return items;
     },
 
@@ -298,17 +298,17 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         this.triggerObserver("beep");
         if (options["visualbell"]) {
             let elems = {
-                bell: document.getElementById("dactyl-bell"),
-                strut: document.getElementById("dactyl-bell-strut")
+                bell: window.document.getElementById("dactyl-bell"),
+                strut: window.document.getElementById("dactyl-bell-strut")
             };
             if (!elems.bell)
                 overlay.overlayWindow(window, {
                     objects: elems,
                     prepend: [
-                        ["window", { id: document.documentElement.id, xmlns: "xul" },
+                        ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                             ["hbox", { style: "display: none",  highlight: "Bell", id: "dactyl-bell", key: "bell" }]]],
                     append: [
-                        ["window", { id: document.documentElement.id, xmlns: "xul" },
+                        ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                             ["hbox", { style: "display: none", highlight: "Bell", id: "dactyl-bell-strut", key: "strut" }]]]
                 }, elems);
 
@@ -959,7 +959,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                     if (dactyl.forcePrivate)
                         options.push("private");
 
-                    let win = window.openDialog(document.documentURI, "_blank", options.join(","));
+                    let win = window.openDialog(window.document.documentURI, "_blank", options.join(","));
                     util.waitFor(() => win.document.readyState === "complete");
                     browser = win.dactyl && win.dactyl.modules.config.tabbrowser || win.getBrowser();
                     // FALLTHROUGH
@@ -1388,7 +1388,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 // FIXME: cleanup
                 cleanupValue: config.cleanups.guioptions ||
                     "rb" + [k for ([k, v] in iter(groups[1].opts))
-                            if (!Dactyl.toolbarHidden(document.getElementById(v[1][0])))].join(""),
+                            if (!Dactyl.toolbarHidden(window.document.getElementById(v[1][0])))].join(""),
 
                 values: array(groups).map(g => [[k, v[0]] for ([k, v] in Iterator(g.opts))])
                                      .flatten(),
@@ -1417,7 +1417,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                         if (config.browser.updateTitlebar)
                             config.browser.updateTitlebar();
                         else
-                            document.title = document.title.replace(RegExp("(.*)" + util.regexp.escape(old)), "$1" + current);
+                            window.document.title = window.document.title.replace(RegExp("(.*)" + util.regexp.escape(old)), "$1" + current);
                     }
 
                     if (win.hasAttribute("titlemodifier_privatebrowsing")) {
@@ -1852,7 +1852,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             context.generate = () => dactyl.menuItems;
         };
 
-        var toolbox = document.getElementById("navigator-toolbox");
+        var toolbox = window.document.getElementById("navigator-toolbox");
         completion.toolbar = function toolbar(context) {
             context.title = ["Toolbar"];
             context.keys = { text: function (item) item.getAttribute("toolbarname"), description: function () "" };
@@ -1875,7 +1875,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         userContext.$ = modules.userContext.DOM;
 
         // Hack: disable disabling of Personas in private windows.
-        let root = document.documentElement;
+        let root = window.document.documentElement;
 
         if (PrivateBrowsingUtils && PrivateBrowsingUtils.isWindowPrivate(window)
                 && root._lightweightTheme
