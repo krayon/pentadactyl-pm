@@ -1466,7 +1466,7 @@ var CommandLine = Module("commandline", {
             this.removeSubstring = substring;
 
             let node = DOM.fromJSON(["span", { highlight: "Preview" }, substring],
-                                    document);
+                                    window.document);
 
             this.withSavedValues(["caret"], function () {
                 this.editor.insertNode(node, this.editor.rootElement, 1);

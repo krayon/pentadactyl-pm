@@ -201,7 +201,7 @@ var Buffer = Module("Buffer", {
      */
     get pageHeight() this.win.innerHeight,
 
-    get contentViewer() this.docShell.contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer),
+    get contentViewer() this.docShell.contentViewer,
 
     /**
      * @property {number} The current browser's zoom level, as a

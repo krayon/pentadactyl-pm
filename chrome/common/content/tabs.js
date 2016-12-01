@@ -85,7 +85,7 @@ var Tabs = Module("tabs", {
                             ["xul:hbox", { highlight: "tab-number" },
                                 ["html:div", { key: "label", highlight: "TabNumber",
                                                class: "dactyl-tab-number" }]]],
-                            document).appendTo(img.parentNode);
+                            window.document).appendTo(img.parentNode);
 
                         update(tab, {
                             get dactylOrdinal() Number(dom.nodes.icon.value),
