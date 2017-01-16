@@ -21,7 +21,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
                 if (elem)
                     return elem.inputField || elem;
 
-                let win = document.commandDispatcher.focusedWindow;
+                let win = window.document.commandDispatcher.focusedWindow;
                 return DOM(win).isEditable && win || null;
             });
     },
@@ -366,11 +366,11 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             args = { file: args };
         args.file = args.file.path || args.file;
 
-        let args = options.get("editor").format(args);
+        let localargs = options.get("editor").format(args);
 
-        dactyl.assert(args.length >= 1, _("option.notSet", "editor"));
+        dactyl.assert(localargs.length >= 1, _("option.notSet", "editor"));
 
-        io.run(args.shift(), args, blocking);
+        io.run(localargs.shift(), localargs, blocking);
     },
 
     // TODO: clean up with 2 functions for textboxes and currentEditor?
@@ -400,7 +400,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
         }
         else {
             var editor_ = window.GetCurrentEditor ? GetCurrentEditor()
-                                                  : Editor.getEditor(document.commandDispatcher.focusedWindow);
+                                                  : Editor.getEditor(window.document.commandDispatcher.focusedWindow);
             dactyl.assert(editor_);
             text = Array.map(editor_.rootElement.childNodes,
                              e => DOM.stringify(e, true))
@@ -686,7 +686,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
         }
 
         if (!elem)
-            elem = dactyl.focusedElement || document.commandDispatcher.focusedWindow;
+            elem = dactyl.focusedElement || window.document.commandDispatcher.focusedWindow;
         dactyl.assert(elem);
 
         return DOM(elem).editor;
@@ -820,7 +820,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             };
 
             function caretExecute(arg) {
-                let win = document.commandDispatcher.focusedWindow;
+                let win = window.document.commandDispatcher.focusedWindow;
                 let controller = util.selectionController(win);
                 let sel = controller.getSelection(controller.SELECTION_NORMAL);
 
@@ -1123,7 +1123,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
                                // focus and use their own WYSIWYG editor
                                // implementations for the visible area,
                                // which we can't handle.
-                               let (f = document.commandDispatcher.focusedWindow.frameElement)
+                               let (f = window.document.commandDispatcher.focusedWindow.frameElement)
                                     f && Hints.isVisible(f, true));
 
                  modes.push(modes.TEXT_EDIT);
@@ -1148,7 +1148,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             ["<C-]>", "<C-5>"], "Expand Insert mode abbreviation",
             function () { editor.expandAbbreviation(modes.INSERT); });
 
-        let bind = function bind(names, description, action, params)
+        bind = function bind(names, description, action, params)
             mappings.add([modes.TEXT_EDIT], names, description,
                          action, update({ type: "editor" }, params));
 
@@ -1261,7 +1261,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             },
             { arg: true });
 
-        let bind = function bind(names, description, action, params)
+        bind = function bind(names, description, action, params)
             mappings.add([modes.TEXT_EDIT, modes.OPERATOR, modes.VISUAL],
                          names, description,
                          action, update({ type: "editor" }, params));
@@ -1328,7 +1328,7 @@ var Editor = Module("editor", XPCOM(Ci.nsIEditActionListener, ModuleBase), {
             },
             { count: true });
 
-        let bind = function bind(...args) mappings.add.apply(mappings, [[modes.AUTOCOMPLETE]].concat(args));
+        bind = function bind(...args) mappings.add.apply(mappings, [[modes.AUTOCOMPLETE]].concat(args));
 
         bind(["<Esc>"], "Return to Insert mode",
              () => Events.PASS_THROUGH);

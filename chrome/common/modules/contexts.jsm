@@ -273,7 +273,7 @@ var Contexts = Module("contexts", {
         }
 
         let path = isRuntime ? file.getRelativeDescriptor(isRuntime) : file.path;
-        let name = isRuntime ? path.replace(/^(plugin|color)s([\\\/])/, "$1$2") : "script-" + path;
+        name = isRuntime ? path.replace(/^(plugin|color)s([\\\/])/, "$1$2") : "script-" + path;
 
         if (!group)
             group = this.addGroup(commands.nameRegexp
@@ -302,11 +302,11 @@ var Contexts = Module("contexts", {
         if (uri instanceof Ci.nsIFileURL)
             var file = File(uri.file);
 
-        let isPlugin = array.nth(io.getRuntimeDirectories("plugins"),
+        let localisPlugin = array.nth(io.getRuntimeDirectories("plugins"),
                                  dir => dir.contains(file, true),
                                  0);
 
-        let name = isPlugin && file && file.getRelativeDescriptor(isPlugin)
+        let name = localisPlugin && file && file.getRelativeDescriptor(localisPlugin)
                                            .replace(File.PATH_SEP, "-");
         let id   = util.camelCase(name.replace(/\.[^.]*$/, ""));
 
@@ -347,7 +347,7 @@ var Contexts = Module("contexts", {
         }
 
         // This belongs elsewhere
-        if (isPlugin)
+        if (localisPlugin)
             Object.defineProperty(plugins, self.NAME, {
                 configurable: true,
                 enumerable: true,

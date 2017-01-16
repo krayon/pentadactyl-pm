@@ -35,7 +35,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         this.cleanups = [];
         this.cleanups.push(overlay.overlayObject(window, {
             focusAndSelectUrlBar: function focusAndSelectUrlBar() {
-                switch (options.get("strictfocus").getKey(document.documentURIObject || util.newURI(document.documentURI), "moderate")) {
+                switch (options.get("strictfocus").getKey(window.document.documentURIObject || util.newURI(window.document.documentURI), "moderate")) {
                 case "laissez-faire":
                     if (!Events.isHidden(window.gURLBar, true))
                         return focusAndSelectUrlBar.superapply(this, arguments);
@@ -58,7 +58,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             #TabsToolbar tab { display: none; }\n\
         ');
         styles.unregisterSheet("resource://dactyl-skin/dactyl.css");
-        DOM('#TabsToolbar tab', document).style.display;
+        DOM('#TabsToolbar tab', window.document).style.display;
     },
 
     destroy: function () {
@@ -76,7 +76,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         for (let option in guioptions) {
             guioptions[option].forEach(function (elem) {
                 try {
-                    document.getElementById(elem).collapsed = true;
+                    window.document.getElementById(elem).collapsed = true;
                 }
                 catch (e) {}
             });
@@ -150,7 +150,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         }
 
         let items = [];
-        addChildren(document.getElementById(config.guioptions["m"][1]), "");
+        addChildren(window.document.getElementById(config.guioptions["m"][1]), "");
         return items;
     },
 
@@ -298,17 +298,17 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         this.triggerObserver("beep");
         if (options["visualbell"]) {
             let elems = {
-                bell: document.getElementById("dactyl-bell"),
-                strut: document.getElementById("dactyl-bell-strut")
+                bell: window.document.getElementById("dactyl-bell"),
+                strut: window.document.getElementById("dactyl-bell-strut")
             };
             if (!elems.bell)
                 overlay.overlayWindow(window, {
                     objects: elems,
                     prepend: [
-                        ["window", { id: document.documentElement.id, xmlns: "xul" },
+                        ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                             ["hbox", { style: "display: none",  highlight: "Bell", id: "dactyl-bell", key: "bell" }]]],
                     append: [
-                        ["window", { id: document.documentElement.id, xmlns: "xul" },
+                        ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                             ["hbox", { style: "display: none", highlight: "Bell", id: "dactyl-bell-strut", key: "strut" }]]]
                 }, elems);
 
@@ -569,7 +569,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         if (window != services.focus.activeWindow)
             return;
 
-        let win = document.commandDispatcher.focusedWindow;
+        let win = window.document.commandDispatcher.focusedWindow;
         let elem = config.mainWidget || content;
 
         // TODO: make more generic
@@ -959,7 +959,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                     if (dactyl.forcePrivate)
                         options.push("private");
 
-                    let win = window.openDialog(document.documentURI, "_blank", options.join(","));
+                    let win = window.openDialog(window.document.documentURI, "_blank", options.join(","));
                     util.waitFor(() => win.document.readyState === "complete");
                     browser = win.dactyl && win.dactyl.modules.config.tabbrowser || win.getBrowser();
                     // FALLTHROUGH
@@ -1325,7 +1325,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 }, config.guioptions),
                 setter: function (opts) {
                     for (let [opt, [, ids]] in Iterator(this.opts)) {
-                        ids.map(id => document.getElementById(id))
+                        ids.map(id => window.document.getElementById(id))
                            .forEach(function (elem) {
                             if (elem)
                                 dactyl.setNodeVisible(elem, opts.indexOf(opt) >= 0);
@@ -1388,7 +1388,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 // FIXME: cleanup
                 cleanupValue: config.cleanups.guioptions ||
                     "rb" + [k for ([k, v] in iter(groups[1].opts))
-                            if (!Dactyl.toolbarHidden(document.getElementById(v[1][0])))].join(""),
+                            if (!Dactyl.toolbarHidden(window.document.getElementById(v[1][0])))].join(""),
 
                 values: array(groups).map(g => [[k, v[0]] for ([k, v] in Iterator(g.opts))])
                                      .flatten(),
@@ -1412,12 +1412,12 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             "string", config.host,
             {
                 setter: function (value) {
-                    let win = document.documentElement;
+                    let win = window.document.documentElement;
                     function updateTitle(old, current) {
                         if (config.browser.updateTitlebar)
                             config.browser.updateTitlebar();
                         else
-                            document.title = document.title.replace(RegExp("(.*)" + util.regexp.escape(old)), "$1" + current);
+                            window.document.title = window.document.title.replace(RegExp("(.*)" + util.regexp.escape(old)), "$1" + current);
                     }
 
                     if (win.hasAttribute("titlemodifier_privatebrowsing")) {
@@ -1664,7 +1664,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
                 "@toolbarname=" + util.escapeString(name.trim(), "'") + "]",
             document).snapshotItem(0);
 
-        var toolbox = document.getElementById("navigator-toolbox");
+        var toolbox = window.document.getElementById("navigator-toolbox");
         if (toolbox) {
             let toolbarCommand = function (names, desc, action, filter) {
                 commands.add(names, desc,
@@ -1852,7 +1852,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
             context.generate = () => dactyl.menuItems;
         };
 
-        var toolbox = document.getElementById("navigator-toolbox");
+        var toolbox = window.document.getElementById("navigator-toolbox");
         completion.toolbar = function toolbar(context) {
             context.title = ["Toolbar"];
             context.keys = { text: function (item) item.getAttribute("toolbarname"), description: function () "" };
@@ -1875,7 +1875,7 @@ var Dactyl = Module("dactyl", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), {
         userContext.$ = modules.userContext.DOM;
 
         // Hack: disable disabling of Personas in private windows.
-        let root = document.documentElement;
+        let root = window.document.documentElement;
 
         if (PrivateBrowsingUtils && PrivateBrowsingUtils.isWindowPrivate(window)
                 && root._lightweightTheme

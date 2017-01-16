@@ -165,7 +165,7 @@ var CommandWidgets = Class("CommandWidgets", {
         const self = this;
         this.elements[obj.name] = obj;
 
-        function get(prefix, map, id) (obj.getElement || util.identity)(map[id] || document.getElementById(prefix + id));
+        function get(prefix, map, id) (obj.getElement || util.identity)(map[id] || window.document.getElementById(prefix + id));
 
         this.active.__defineGetter__(obj.name, () => this.activeGroup[obj.name][obj.name]);
         this.activeGroup.__defineGetter__(obj.name, () => this.getGroup(obj.name));
@@ -288,7 +288,7 @@ var CommandWidgets = Class("CommandWidgets", {
     },
 
     _whenReady: function _whenReady(id, init) {
-        let elem = document.getElementById(id);
+        let elem = window.document.getElementById(id);
         while (!this._ready(elem))
             yield 10;
 
@@ -309,7 +309,7 @@ var CommandWidgets = Class("CommandWidgets", {
                 MozImageRegion: style.MozImageRegion
             });
         });
-        return document.getElementById("dactyl-contextmenu");
+        return window.document.getElementById("dactyl-contextmenu");
     }),
 
     multilineOutput: Class.Memoize(function () this._whenReady("dactyl-multiline-output",
@@ -317,9 +317,9 @@ var CommandWidgets = Class("CommandWidgets", {
         highlight.highlightNode(elem.contentDocument.body, "MOW");
     }), true),
 
-    multilineInput: Class.Memoize(() => document.getElementById("dactyl-multiline-input")),
+    multilineInput: Class.Memoize(() => window.document.getElementById("dactyl-multiline-input")),
 
-    mowContainer: Class.Memoize(() => document.getElementById("dactyl-multiline-output-container"))
+    mowContainer: Class.Memoize(() => window.document.getElementById("dactyl-multiline-output-container"))
 }, {
     getEditor: function getEditor(elem) {
         elem.inputField.QueryInterface(Ci.nsIDOMNSEditableElement);
@@ -628,10 +628,10 @@ var CommandLine = Module("commandline", {
     get completionList() {
         let node = this.widgets.active.commandline;
         if (this.commandSession && this.commandSession.completionList)
-            node = document.getElementById(this.commandSession.completionList);
+            node = window.document.getElementById(this.commandSession.completionList);
 
         if (!node.completionList) {
-            let elem = document.getElementById("dactyl-completions-" + node.id);
+            let elem = window.document.getElementById("dactyl-completions-" + node.id);
             util.waitFor(bind(this.widgets._ready, null, elem));
 
             node.completionList = ItemList(elem);
@@ -1466,7 +1466,7 @@ var CommandLine = Module("commandline", {
             this.removeSubstring = substring;
 
             let node = DOM.fromJSON(["span", { highlight: "Preview" }, substring],
-                                    document);
+                                    window.document);
 
             this.withSavedValues(["caret"], function () {
                 this.editor.insertNode(node, this.editor.rootElement, 1);
@@ -2172,7 +2172,7 @@ var ItemList = Class("ItemList", {
         let { completions, root } = this.nodes;
 
         if (!this.visible)
-            root.style.minWidth = document.getElementById("dactyl-commandline").scrollWidth + "px";
+            root.style.minWidth = window.document.getElementById("dactyl-commandline").scrollWidth + "px";
 
         let { minHeight } = this;
         if (mow.visible && this.isAboveMow) // Kludge.

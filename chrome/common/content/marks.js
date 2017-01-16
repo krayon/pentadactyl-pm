@@ -308,7 +308,7 @@ var Marks = Module("marks", {
     isURLMark: bind("test", /^[A-Z]$/)
 }, {
     events: function () {
-        let appContent = document.getElementById("appcontent");
+        let appContent = window.document.getElementById("appcontent");
         if (appContent)
             events.listen(appContent, "load", marks.closure._onPageLoad, true);
     },

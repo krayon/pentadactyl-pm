@@ -13,9 +13,9 @@ lazyRequire("contexts", ["Contexts"]);
 lazyRequire("template", ["template"]);
 
 function cssUri(css) "chrome-data:text/css," + encodeURI(css);
-var namespace = "@namespace html " + XHTML.quote() + ";\n" +
-                "@namespace xul " + XUL.quote() + ";\n" +
-                "@namespace dactyl " + NS.quote() + ";\n";
+var namespace = "@namespace html " + JSON.stringify(XHTML) + ";\n" +
+                "@namespace xul " + JSON.stringify(XUL) + ";\n" +
+                "@namespace dactyl " + JSON.stringify(NS) + ";\n";
 
 var Sheet = Struct("name", "id", "sites", "css", "hive", "agent");
 Sheet.liveProperty = function (name) {

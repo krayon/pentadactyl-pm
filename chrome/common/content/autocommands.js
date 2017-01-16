@@ -90,7 +90,7 @@ var AutoCommands = Module("autocommands", {
      */
     list: function (event, regexp, hives) {
 
-        let hives = hives || this.activeHives;
+        let localhives = hives || this.activeHives;
 
         function cmds(hive) {
             let cmds = {};
@@ -107,7 +107,7 @@ var AutoCommands = Module("autocommands", {
             ["table", {},
                 ["tr", { highlight: "Title" },
                     ["td", { colspan: "3" }, "----- Auto Commands -----"]],
-                hives.map(hive => [
+                localhives.map(hive => [
                     ["tr", {},
                         ["td", { colspan: "3" },
                             ["span", { highlight: "Title" }, hive.name],
@@ -138,7 +138,7 @@ var AutoCommands = Module("autocommands", {
         if (options.get("eventignore").has(event))
             return;
 
-        dactyl.echomsg(_("autocmd.executing", event, "*".quote()), 8);
+        dactyl.echomsg(_("autocmd.executing", event, JSON.stringify("*")), 8);
 
         let lastPattern = null;
         var { url, doc } = args;

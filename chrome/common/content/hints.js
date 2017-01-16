@@ -746,7 +746,7 @@ var Hints = Module("hints", {
                 modes.getStack(0).params.onResize();
         });
 
-        let appContent = document.getElementById("appcontent");
+        let appContent = window.document.getElementById("appcontent");
         if (appContent)
             events.listen(appContent, "scroll", this.resizeTimer.closure.tell, false);
 
@@ -1261,7 +1261,7 @@ var Hints = Module("hints", {
             function ({ count }) { hints.open("g;", { continue: true, count: count }); },
             { count: true });
 
-        let bind = function bind(names, description, action, params)
+        bind = function bind(names, description, action, params)
             mappings.add([modes.HINTS], names, description,
                          action, params);
 
