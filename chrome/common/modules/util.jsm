@@ -1372,7 +1372,8 @@ var Util = Module("Util", XPCOM([Ci.nsIObserver, Ci.nsISupportsWeakReference]), 
         if (isString(error))
             error = Error(error);
 
-        Cu.reportError(error);
+        Components.utils.reportError(error);
+        //Cu.reportError(error);
 
         try {
             this.errorCount++;

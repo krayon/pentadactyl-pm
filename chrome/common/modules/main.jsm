@@ -274,7 +274,7 @@ overlay.overlayWindow(Object.keys(config.overlays),
             if (frame && frame.filename)
                 defineModule.loadLog.push("  from: " + util.fixURI(frame.filename) + ":" + frame.lineNumber);
 
-            let obj = defineModule.time(module.className, "init", module);
+            var obj = defineModule.time(module.className, "init", module);
             Class.replaceProperty(modules, module.className, obj);
 
             Set.add(loaded, module.className);

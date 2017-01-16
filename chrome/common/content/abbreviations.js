@@ -249,7 +249,7 @@ var Abbreviations = Module("abbreviations", {
     match: function (mode, text) {
         let match = this._match.exec(text);
         if (match)
-            return this.hives.map(h => h.get(mode, match[2] || match[4] || match[6]))
+            return this.localhives.map(h => h.get(mode, match[2] || match[4] || match[6]))
                        .nth(util.identity, 0);
         return null;
     },
@@ -263,7 +263,7 @@ var Abbreviations = Module("abbreviations", {
      * @optional
      */
     list: function (modes, lhs, hives) {
-        let hives = (hives || this.userHives).filter(h => !h.empty);
+        let localhives = (hives || this.userHives).filter(h => !h.empty);
 
         function abbrevs(hive)
             hive.merged.filter(ab => (ab.inModes(modes) && ab.lhs.indexOf(lhs) == 0));
@@ -275,7 +275,7 @@ var Abbreviations = Module("abbreviations", {
                     ["td", { style: "padding-right: 1em;" }, _("title.Abbrev")],
                     ["td", { style: "padding-right: 1em;" }, _("title.Replacement")]],
                 ["col", { style: "min-width: 6em; padding-right: 1em;" }],
-                hives.map(hive => let (i = 0) [
+                localhives.map(hive => let (i = 0) [
                     ["tr", { style: "height: .5ex;" }],
                     abbrevs(hive).map(abbrev =>
                         ["tr", {},
@@ -297,7 +297,7 @@ var Abbreviations = Module("abbreviations", {
 }, {
     contexts: function initContexts(dactyl, modules, window) {
         update(Abbreviations.prototype, {
-            hives: contexts.Hives("abbrevs", AbbrevHive),
+            localhives: contexts.Hives("abbrevs", AbbrevHive),
             user: contexts.hives.abbrevs.user
         });
     },

@@ -19,7 +19,7 @@ var Tabs = Module("tabs", {
         this._lastBufferSwitchArgs = "";
         this._lastBufferSwitchSpecial = true;
 
-        this.xulTabs = document.getElementById("tabbrowser-tabs");
+        this.xulTabs = window.document.getElementById("tabbrowser-tabs");
 
         // hide tabs initially to prevent flickering when 'stal' would hide them
         // on startup
@@ -61,7 +61,7 @@ var Tabs = Module("tabs", {
 
     cleanup: function cleanup() {
         for (let [i, tab] in Iterator(this.allTabs)) {
-            let node = function node(class_) document.getAnonymousElementByAttribute(tab, "class", class_);
+            let node = function node(class_) window.document.getAnonymousElementByAttribute(tab, "class", class_);
             for (let elem in values(["dactyl-tab-icon-number", "dactyl-tab-number"].map(node)))
                 if (elem)
                     elem.parentNode.parentNode.removeChild(elem.parentNode);
@@ -74,7 +74,7 @@ var Tabs = Module("tabs", {
     updateTabCount: function updateTabCount() {
         for (let [i, tab] in Iterator(this.visibleTabs)) {
             if (dactyl.has("Gecko2")) {
-                let node = function node(class_) document.getAnonymousElementByAttribute(tab, "class", class_);
+                let node = function node(class_) window.document.getAnonymousElementByAttribute(tab, "class", class_);
                 if (!node("dactyl-tab-number")) {
                     let img = node("tab-icon-image");
                     if (img) {
@@ -85,7 +85,7 @@ var Tabs = Module("tabs", {
                             ["xul:hbox", { highlight: "tab-number" },
                                 ["html:div", { key: "label", highlight: "TabNumber",
                                                class: "dactyl-tab-number" }]]],
-                            document).appendTo(img.parentNode);
+                            window.document).appendTo(img.parentNode);
 
                         update(tab, {
                             get dactylOrdinal() Number(dom.nodes.icon.value),
@@ -230,7 +230,7 @@ var Tabs = Module("tabs", {
      * @returns {Window}
      */
     getGroups: function getGroups(func) {
-        let iframe = document.getElementById("tab-view");
+        let iframe = window.document.getElementById("tab-view");
         this._groups = iframe ? iframe.contentWindow : null;
 
         if ("_groups" in this && !func)

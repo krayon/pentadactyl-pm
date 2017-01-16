@@ -92,14 +92,14 @@ var IO = Module("io", {
             let dirs = modules.options.get("runtimepath").files;
             let found = null;
 
-            dactyl.echomsg(_("io.searchingFor", paths.join(" ").quote(), modules.options.get("runtimepath").stringValue), 2);
+            dactyl.echomsg(_("io.searchingFor", JSON.stringify(paths.join(" ")), modules.options.get("runtimepath").stringValue), 2);
 
         outer:
             for (let dir in values(dirs)) {
                 for (let [, path] in Iterator(paths)) {
                     let file = dir.child(path);
 
-                    dactyl.echomsg(_("io.searchingFor", file.path.quote()), 3);
+                    dactyl.echomsg(_("io.searchingFor", JSON.stringify(file.path)), 3);
 
                     if (file.exists() && file.isFile() && file.isReadable()) {
                         found = io.source(file.path, false) || true;
@@ -111,7 +111,7 @@ var IO = Module("io", {
             }
 
             if (!found)
-                dactyl.echomsg(_("io.notInRTP", paths.join(" ").quote()), 1);
+                dactyl.echomsg(_("io.notInRTP", JSON.stringify(paths.join(" "))), 1);
 
             return found;
         },
@@ -138,11 +138,11 @@ var IO = Module("io", {
 
                     if (!file.exists() || !file.isReadable() || file.isDirectory()) {
                         if (!params.silent)
-                            dactyl.echoerr(_("io.notReadable", filename.quote()));
+                            dactyl.echoerr(_("io.notReadable", JSON.stringify(filename)));
                         return;
                     }
 
-                    dactyl.echomsg(_("io.sourcing", filename.quote()), 2);
+                    dactyl.echomsg(_("io.sourcing", JSON.stringify(filename)), 2);
 
                     let uri = file.URI;
 
@@ -198,7 +198,7 @@ var IO = Module("io", {
 
                     Set.add(this._scriptNames, file.path);
 
-                    dactyl.echomsg(_("io.sourcingEnd", filename.quote()), 2);
+                    dactyl.echomsg(_("io.sourcingEnd", JSON.stringify(filename)), 2);
                     dactyl.log(_("dactyl.sourced", filename), 3);
 
                     return context;
@@ -255,7 +255,7 @@ var IO = Module("io", {
         }
         else {
             let dir = io.File(newDir);
-            util.assert(dir.exists() && dir.isDirectory(), _("io.noSuchDir", dir.path.quote()));
+            util.assert(dir.exists() && dir.isDirectory(), _("io.noSuchDir", JSON.stringify(dir.path)));
             dir.normalize();
             [this._cwd, this._oldcwd] = [dir.path, this.cwd];
         }
@@ -609,7 +609,7 @@ var IO = Module("io", {
                         }
                     }
 
-                    dactyl.echoerr(_("io.noSuchDir", arg.quote()));
+                    dactyl.echoerr(_("io.noSuchDir", JSON.stringify(arg)));
                     dactyl.echoerr(_("io.commandFailed"));
                 }
             }, {
@@ -630,7 +630,7 @@ var IO = Module("io", {
 
                 let file = io.File(args[0] || io.getRCFile(null, true));
 
-                dactyl.assert(!file.exists() || args.bang, _("io.exists", file.path.quote()));
+                dactyl.assert(!file.exists() || args.bang, _("io.exists", JSON.stringify(file.path)));
 
                 // TODO: Use a set/specifiable list here:
                 let lines = [cmd.serialize().map(commands.commandToString, cmd) for (cmd in commands.iterator()) if (cmd.serialize)];
@@ -641,10 +641,10 @@ var IO = Module("io", {
 
                 try {
                     file.write(lines.join("\n").concat("\n"));
-                    dactyl.echomsg(_("io.writing", file.path.quote()), 2);
+                    dactyl.echomsg(_("io.writing", JSON.stringify(file.path)), 2);
                 }
                 catch (e) {
-                    dactyl.echoerr(_("io.notWriteable", file.path.quote()));
+                    dactyl.echoerr(_("io.notWriteable", JSON.stringify(file.path)));
                     dactyl.log(_("error.notWriteable", file.path, e.message)); // XXX
                 }
             }, {
@@ -660,19 +660,19 @@ var IO = Module("io", {
 
                 if (args.length) {
                     var rtDir = io.File(args[0]);
-                    dactyl.assert(rtDir.exists(), _("io.noSuchDir", rtDir.path.quote()));
+                    dactyl.assert(rtDir.exists(), _("io.noSuchDir", JSON.stringify(rtDir.path)));
                 }
                 else
                     rtDir = io.File(config.OS.isWindows ? "~/vimfiles/" : "~/.vim/");
 
-                dactyl.assert(!rtDir.exists() || rtDir.isDirectory(), _("io.eNotDir", rtDir.path.quote()));
+                dactyl.assert(!rtDir.exists() || rtDir.isDirectory(), _("io.eNotDir", JSON.stringify(rtDir.path)));
 
                 let rtItems = { ftdetect: {}, ftplugin: {}, syntax: {} };
 
                 // require bang if any of the paths exist
                 for (let [type, item] in iter(rtItems)) {
                     let file = io.File(rtDir).child(type, config.name + ".vim");
-                    dactyl.assert(!file.exists() || args.bang, _("io.exists", file.path.quote()));
+                    dactyl.assert(!file.exists() || args.bang, _("io.exists", JSON.stringify(file.path)));
                     item.file = file;
                 }
 
@@ -831,17 +831,17 @@ unlet s:cpo_save\n\
                                   array(o.names for (o in options) if (o.type != "boolean")).flatten()),
                     toggleoptions: wrap("let s:toggleOptions = [",
                                         array(o.realNames for (o in options) if (o.type == "boolean"))
-                                            .flatten().map(String.quote),
+                                            .flatten().map(JSON.stringify(String)),
                                         ", ") + "]"
                 }; //}}}
 
                 for (let { file, template } in values(rtItems)) {
                     try {
                         file.write(util.compileMacro(template, true)(params));
-                        dactyl.echomsg(_("io.writing", file.path.quote()), 2);
+                        dactyl.echomsg(_("io.writing", JSON.stringify(file.path)), 2);
                     }
                     catch (e) {
-                        dactyl.echoerr(_("io.notWriteable", file.path.quote()));
+                        dactyl.echoerr(_("io.notWriteable", JSON.stringify(file.path)));
                         dactyl.log(_("error.notWriteable", file.path, e.message));
                     }
                 }

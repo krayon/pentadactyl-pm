@@ -113,7 +113,7 @@ var Browser = Module("browser", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), 
                 // This fires when the load event is initiated
                 // only thrown for the current tab, not when another tab changes
                 if (flags & L.STATE_START) {
-                    while (document.commandDispatcher.focusedWindow == webProgress.DOMWindow
+                    while (window.document.commandDispatcher.focusedWindow == webProgress.DOMWindow
                            && modes.have(modes.INPUT))
                         modes.pop();
 
@@ -121,7 +121,7 @@ var Browser = Module("browser", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), 
                 else if (flags & L.STATE_STOP) {
                     // Workaround for bugs 591425 and 606877, dactyl bug #81
                     config.browser.mCurrentBrowser.collapsed = false;
-                    if (!dactyl.focusedElement || dactyl.focusedElement === document.documentElement)
+                    if (!dactyl.focusedElement || dactyl.focusedElement === window.document.documentElement)
                         dactyl.focusContent();
                 }
             }
@@ -163,7 +163,7 @@ var Browser = Module("browser", XPCOM(Ci.nsISupportsWeakReference, ModuleBase), 
             // Workaround for bugs 591425 and 606877, dactyl bug #81
             let collapse = uri && uri.scheme === "dactyl" && webProgress.isLoadingDocument;
             if (collapse)
-                dactyl.focus(document.documentElement);
+                dactyl.focus(window.document.documentElement);
             config.browser.mCurrentBrowser.collapsed = collapse;
 
             util.timeout(function () {

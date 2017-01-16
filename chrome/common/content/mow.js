@@ -35,7 +35,7 @@ var MOW = Module("mow", {
         events.listen(window, this, "windowEvents");
 
         modules.mow = this;
-        let fontSize = DOM(document.documentElement).style.fontSize;
+        let fontSize = DOM(window.document.documentElement).style.fontSize;
         styles.system.add("font-size", "dactyl://content/buffer.xhtml",
                           "body { font-size: " + fontSize + "; } \
                            html|html > xul|scrollbar { visibility: collapse !important; }",
@@ -46,7 +46,7 @@ var MOW = Module("mow", {
                 eventTarget: this
             },
             append: [
-                ["window", { id: document.documentElement.id, xmlns: "xul" },
+                ["window", { id: window.document.documentElement.id, xmlns: "xul" },
                     ["popupset", {},
                         ["menupopup", { id: "dactyl-contextmenu", highlight: "Events", events: "contextEvents" },
                             ["menuitem", { id: "dactyl-context-copylink", label: _("mow.contextMenu.copyLink"),
@@ -251,9 +251,9 @@ var MOW = Module("mow", {
     },
 
     get spaceNeeded() {
-        if (DOM("#dactyl-bell", document).isVisible)
+        if (DOM("#dactyl-bell", window.document).isVisible)
             return 0;
-        return Math.max(0, DOM("#" + config.ids.commandContainer, document).rect.bottom
+        return Math.max(0, DOM("#" + config.ids.commandContainer, window.document).rect.bottom
                             - window.innerHeight);
     },
 
@@ -285,13 +285,13 @@ var MOW = Module("mow", {
             this.widgets.mowContainer.collapsed = !value;
 
             let elem = this.widget;
-            if (!value && elem && elem.contentWindow == document.commandDispatcher.focusedWindow) {
+            if (!value && elem && elem.contentWindow == window.document.commandDispatcher.focusedWindow) {
 
                 let focused = content.document.activeElement;
                 if (focused && Events.isInputElement(focused))
                     focused.blur();
 
-                document.commandDispatcher.focusedWindow = content;
+                window.document.commandDispatcher.focusedWindow = content;
             }
         }
     })

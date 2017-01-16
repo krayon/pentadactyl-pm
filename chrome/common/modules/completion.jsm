@@ -979,15 +979,15 @@ var Completion = Module("completion", {
 
         // Will, and should, throw an error if !(c in opts)
         Array.forEach(complete, function fe(c) {
-            let completer = this.urlCompleters[c] || { args: [], completer: this.autocomplete(c.replace(/^native:/, "")) };
-            context.forkapply(c, 0, this, completer.completer, completer.args);
+            let localcompleter = this.urlCompleters[c] || { args: [], localcompleter: this.autocomplete(c.replace(/^native:/, "")) };
+            context.forkapply(c, 0, this, localcompleter.completer, localcompleter.args);
         }, this);
     },
 
     addUrlCompleter: function addUrlCompleter(name, description, completer, ...args) {
-        let completer = Completion.UrlCompleter(name, description, completer);
-        completer.args = args;
-        this.urlCompleters[name] = completer;
+        let localcompleter = Completion.UrlCompleter(name, description, completer);
+        localcompleter.args = args;
+        this.urlCompleters[name] = localcompleter;
     },
 
     autocomplete: curry(function autocomplete(provider, context) {
